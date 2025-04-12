@@ -42,3 +42,14 @@ def text_node_to_html_node(node: TextNode):
         return LeafNode("img",node.text,{"src":node.url})
     else:
         raise ValueError("Invalid 'TextType'")
+    
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    new_nodes = []        
+    
+    for node in old_nodes:
+        if delimiter == '`': # code
+            pass
+        elif delimiter == '**': # Bold
+            pass
+        elif delimiter == "_": #Italic
+            pass
