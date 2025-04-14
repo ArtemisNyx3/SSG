@@ -31,12 +31,15 @@ def helper(old_nodes,split_type):
             text = markdown.pop()
             if text == '':
                 pass
-            sections = text.split(f"![{img_info[0]}]({img_info[1]})", 1)
+            sections = text.split(f"![{img_info[0]}]({img_info[1]})", 1) if split_type == TextType.IMAGE else text.split(f"[{img_info[0]}]({img_info[1]})", 1)
             new_nodes.append(TextNode(sections[0],node.text_type)) # Left is the text before the img/link
             # The link/image
             new_nodes.append(TextNode(img_info[0],TextType.IMAGE,img_info[1])) if split_type == TextType.IMAGE else  new_nodes.append(TextNode(img_info[0],TextType.LINK,img_info[1])) 
             markdown.append(sections[1]) # The string that left contains rest of the info
     # print(f"New Nodes are - {new_nodes}")
+    for x in markdown:
+        if x != '':
+            new_nodes.append(TextNode(x,node.text_type))
     return new_nodes
 
 def split_nodes_image(old_nodes):
@@ -48,4 +51,24 @@ def split_nodes_link(old_nodes):
        return helper(old_nodes, TextType.LINK)
 
 def text_to_textnodes(text):
-    pass
+    nodes = [TextNode(text,TextType.TEXT)]
+    
+    nodes = split_nodes_image(nodes)
+    print("******** Split images  ***********")
+    print(f"Nodes ---- {nodes}")
+    print("*******************")
+    nodes = split_nodes_link(nodes)
+    print("******** Split links  ***********")
+    print(f"Nodes ---- {nodes}")
+    print("*******************")
+
+    nodes = split_nodes_delimiter(nodes, '_', TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, '**', TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, '`', TextType.CODE)
+
+    
+    print("*******************")
+    print(f"Nodes ---- {nodes}")
+    print("*******************")
+
+    return nodes
