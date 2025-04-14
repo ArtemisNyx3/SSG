@@ -4,31 +4,17 @@ from extractmarkdown import extract_markdown_images, extract_markdown_links
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
     for node in old_nodes:
-        flg = False
-        start=0
-        for i in range(len(node.text)):
-            if node.text[i] == delimiter:
-                # print(f"found deliitter at {i}")
-                if flg == False:
-                    # print(f"flg false subNode is from {start} to {i} indicies --- {node.text[start:i]}")
-                    end = i
-                    # start - end = texttype of node
-                    if end-start!= start:
-                        new_nodes.append(TextNode(node.text[start: end], node.text_type))
-                    start = end
-                    flg = True 
-                else:
-                    # print(f"flg true subNode is from {start} to {i} indicies --- {node.text[start:i+1]}")
-
-                    end = i
-                    # start - end = texttype from arg
-                    nstr = node.text[start + 1: end]
-                    if len(nstr) != 0:
-                        new_nodes.append(TextNode(nstr, text_type))
-                    start = end+1
-                    flg = False
-        if (start != len(node.text) -1):
-            new_nodes.append(TextNode(node.text[start:],node.text_type))
+        sections = node.text.split(delimiter)
+        if len(sections) % 2 == 0:
+            raise ValueError("invalid markdown, formatted section not closed")
+        for i in range(len(sections)):
+            if sections[i] == "":
+                continue
+            if i % 2 == 0:
+                new_nodes.append(TextNode(sections[i], node.text_type))
+            else:
+                new_nodes.append(TextNode(sections[i], text_type))
+    # print(f"New nodes are --- {new_nodes}")
     return new_nodes
 
 # TODO: Logic to handle duplicate image markdown
@@ -61,3 +47,5 @@ def split_nodes_image(old_nodes):
 def split_nodes_link(old_nodes):
        return helper(old_nodes, TextType.LINK)
 
+def text_to_textnodes(text):
+    pass
