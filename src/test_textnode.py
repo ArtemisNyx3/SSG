@@ -50,10 +50,10 @@ class TestTextNode(unittest.TestCase):
                         ])
     def test_split_text_node_bold(self):
         node = TextNode("This is text with a **bold block** word", TextType.TEXT)
-        new_nodes = split_nodes_delimiter([node], "**", TextType.ITALIC)
+        new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
         self.assertEqual(new_nodes, [
                                     TextNode("This is text with a ", TextType.TEXT),
-                                    TextNode("bold block", TextType.ITALIC),
+                                    TextNode("bold block", TextType.BOLD),
                                     TextNode(" word", TextType.TEXT),
                         ])
     
